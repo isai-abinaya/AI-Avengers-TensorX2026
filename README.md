@@ -33,6 +33,12 @@ MedPath AI helps Indian patients:
 
 ---
 
+## Live Demo
+
+https://ai-avengers-tensor-x2026.vercel.app/ 
+
+---
+
 ## ⚡ Quick Start
 
 ### 1. Clone / Download the project
