@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MedPath AI — AI Powered Healthcare Navigator & Cost Estimator For India</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --green:#1a6b4a;
+  --green-light:#e8f5ef;
+  --green-mid:#2d9966;
+  --teal:#0e7490;
+  --teal-light:#e0f7fa;
+  --red:#c0392b;
+  --red-light:#fdecea;
+  --amber:#b45309;
+  --amber-light:#fef3c7;
+  --ink:#0f1c14;
+  --ink2:#2d4a38;
+  --muted:#5c7a68;
+  --border:#c8ddd3;
+  --surface:#f5faf7;
+  --white:#ffffff;
+  --card-shadow:0 2px 16px rgba(26,107,74,0.08);
+  --radius:14px;
+}
+
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--ink);min-height:100vh;line-height:1.6}
+
+/* NAV */
+nav{background:var(--white);border-bottom:1.5px solid var(--border);position:sticky;top:0;z-index:100;padding:0 2rem}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:62px}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:36px;height:36px;background:var(--green);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+.logo-text{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);letter-spacing:-0.3px}
+.logo-text span{color:var(--green-mid)}
+.nav-links{display:flex;gap:6px}
+.nav-links a{font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;padding:6px 14px;border-radius:8px;transition:all .2s}
+.nav-links a:hover,.nav-links a.active{background:var(--green-light);color:var(--green)}
+.team-badge{font-size:12px;font-weight:500;background:var(--green-light);color:var(--green);padding:5px 12px;border-radius:20px}
+
+/* HERO */
+.hero{max-width:1100px;margin:0 auto;padding:70px 2rem 50px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.hero-label{font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--green-mid);margin-bottom:14px}
+.hero h1{font-family:'DM Serif Display',serif;font-size:48px;line-height:1.15;color:var(--ink);margin-bottom:18px;letter-spacing:-0.5px}
+.hero h1 em{font-style:italic;color:var(--green)}
+.hero p{font-size:17px;color:var(--muted);line-height:1.7;margin-bottom:28px;font-weight:300}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{background:var(--green);color:#fff;border:none;padding:13px 28px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:0.2px}
+.btn-primary:hover{background:#155a3c;transform:translateY(-1px)}
+.btn-secondary{background:transparent;color:var(--green);border:1.5px solid var(--green);padding:12px 24px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-secondary:hover{background:var(--green-light)}
+.hero-visual{background:var(--white);border-radius:20px;border:1.5px solid var(--border);padding:28px;box-shadow:var(--card-shadow)}
+.hv-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.hv-row:last-child{border-bottom:none}
+.hv-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.hv-icon.g{background:var(--green-light)}
+.hv-icon.t{background:var(--teal-light)}
+.hv-icon.r{background:var(--red-light)}
+.hv-icon.a{background:var(--amber-light)}
+.hv-text{flex:1}
+.hv-title{font-size:14px;font-weight:600;color:var(--ink)}
+.hv-sub{font-size:12px;color:var(--muted)}
+.hv-val{font-family:'DM Serif Display',serif;font-size:18px;color:var(--green);font-weight:400}
+
+/* SECTION */
+.section{max-width:1100px;margin:0 auto;padding:20px 2rem 60px}
+.section-title{font-family:'DM Serif Display',serif;font-size:34px;color:var(--ink);margin-bottom:8px;letter-spacing:-0.3px}
+.section-sub{font-size:15px;color:var(--muted);margin-bottom:36px;font-weight:300}
+.divider{border:none;border-top:1.5px solid var(--border);margin:0 2rem}
+
+/* TABS */
+.tabs{display:flex;gap:6px;margin-bottom:32px;background:var(--white);padding:6px;border-radius:12px;border:1.5px solid var(--border);width:fit-content}
+.tab{padding:9px 22px;border-radius:9px;font-size:14px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .2s}
+.tab.active{background:var(--green);color:#fff}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* SYMPTOM ANALYZER */
+.card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--border);padding:28px;box-shadow:var(--card-shadow)}
+.form-label{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:8px;display:block;letter-spacing:0.3px}
+.form-hint{font-size:12px;color:var(--muted);margin-bottom:10px}
+.symptom-input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--surface);transition:border .2s;outline:none}
+.symptom-input:focus{border-color:var(--green)}
+.symptom-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;margin-bottom:20px}
+.stag{background:var(--green-light);color:var(--green);font-size:13px;font-weight:500;padding:5px 12px;border-radius:20px;cursor:pointer;border:1px solid transparent;transition:all .2s}
+.stag:hover{border-color:var(--green)}
+.stag.active{background:var(--green);color:#fff}
+.analyze-btn{width:100%;padding:13px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.analyze-btn:hover{background:#155a3c}
+.result-box{margin-top:24px;display:none}
+.result-box.show{display:block;animation:fadeIn .3s ease}
+.result-item{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:12px;transition:border .2s}
+.result-item:hover{border-color:var(--green)}
+.result-rank{font-size:11px;font-weight:700;color:var(--green-mid);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.result-disease{font-family:'DM Serif Display',serif;font-size:20px;color:var(--ink);margin-bottom:4px}
+.result-meta{font-size:13px;color:var(--muted);margin-bottom:10px}
+.confidence-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.confidence-fill{height:100%;border-radius:3px;background:var(--green-mid);transition:width .6s ease}
+.confidence-fill.medium{background:var(--amber)}
+.confidence-fill.low{background:var(--muted)}
+.confidence-label{font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+.specialist-chip{display:inline-flex;align-items:center;gap:6px;background:var(--teal-light);color:var(--teal);font-size:13px;font-weight:500;padding:5px 12px;border-radius:20px;margin-top:6px}
+
+/* COST ESTIMATOR */
+.cost-form{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.form-group{display:flex;flex-direction:column}
+.form-select{padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--surface);outline:none;cursor:pointer;transition:border .2s}
+.form-select:focus{border-color:var(--green)}
+.cost-btn{grid-column:1/-1;padding:13px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.cost-btn:hover{background:#155a3c}
+.cost-result{margin-top:28px;display:none}
+.cost-result.show{display:block;animation:fadeIn .3s ease}
+.cost-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.cost-title{font-family:'DM Serif Display',serif;font-size:28px;color:var(--ink)}
+.cost-pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px}
+.pill.tier{background:var(--teal-light);color:var(--teal)}
+.pill.type{background:var(--green-light);color:var(--green)}
+.cost-range-box{background:linear-gradient(135deg,var(--green-light),#d4f0e2);border-radius:14px;padding:28px;text-align:center;margin-bottom:20px;border:1.5px solid #b2ddc8}
+.cost-range-label{font-size:13px;font-weight:600;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.cost-range-val{font-family:'DM Serif Display',serif;font-size:38px;color:var(--ink);letter-spacing:-0.5px}
+.cost-range-sub{font-size:13px;color:var(--muted);margin-top:6px}
+.alert-box{border-radius:12px;padding:18px 20px;margin-bottom:16px;display:flex;gap:14px;align-items:flex-start}
+.alert-box.fair{background:#e8f5ef;border:1.5px solid #a8d5bc}
+.alert-box.normal{background:var(--amber-light);border:1.5px solid #f0c04e}
+.alert-box.high{background:var(--red-light);border:1.5px solid #e8a09a;animation:pulse 1.5s ease 2}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.8}}
+.alert-icon{font-size:22px;flex-shrink:0;margin-top:2px}
+.alert-title{font-size:15px;font-weight:600;margin-bottom:4px}
+.alert-msg{font-size:13px;line-height:1.6}
+.alert-box.fair .alert-title{color:#1a6b4a}
+.alert-box.fair .alert-msg{color:#2d4a38}
+.alert-box.normal .alert-title{color:#92400e}
+.alert-box.normal .alert-msg{color:#78350f}
+.alert-box.high .alert-title{color:#9b1c1c}
+.alert-box.high .alert-msg{color:#7f1d1d}
+.quoted-section{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:20px;margin-top:16px}
+.quoted-row{display:flex;align-items:center;gap:12px}
+.quoted-input{flex:1;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:15px;font-family:'DM Serif Display',serif;outline:none;background:var(--white);transition:border .2s}
+.quoted-input:focus{border-color:var(--green)}
+.check-btn{padding:11px 20px;background:var(--ink);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:background .2s}
+.check-btn:hover{background:var(--ink2)}
+
+/* HOSPITALS */
+.filter-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.filter-select{padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--white);outline:none;cursor:pointer}
+.filter-select:focus{border-color:var(--green)}
+.hospital-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.hospital-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:20px;transition:all .25s;cursor:default}
+.hospital-card:hover{border-color:var(--green);box-shadow:0 4px 20px rgba(26,107,74,0.1);transform:translateY(-2px)}
+.hc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.hc-name{font-family:'DM Serif Display',serif;font-size:17px;color:var(--ink);margin-bottom:3px}
+.hc-city{font-size:12px;color:var(--muted);font-weight:500}
+.hc-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap}
+.hc-badge.private{background:#f3e8ff;color:#6b21a8}
+.hc-badge.government{background:var(--teal-light);color:var(--teal)}
+.hc-divider{border:none;border-top:1px solid var(--border);margin:10px 0}
+.hc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:13px}
+.hc-row-label{color:var(--muted)}
+.hc-row-val{font-weight:500;color:var(--ink)}
+.stars{color:#f59e0b;letter-spacing:1px}
+.budget-chip{font-size:12px;font-weight:600;padding:3px 10px;border-radius:12px}
+.budget-chip.low{background:var(--green-light);color:var(--green)}
+.budget-chip.medium{background:var(--amber-light);color:var(--amber)}
+.budget-chip.high{background:var(--red-light);color:var(--red)}
+.hc-contact{margin-top:10px;font-size:12px;color:var(--teal);font-weight:500}
+.hc-address{margin-top:3px;font-size:11px;color:var(--muted);line-height:1.4}
+.no-results{text-align:center;padding:40px;color:var(--muted);grid-column:1/-1}
+
+/* FOOTER */
+footer{background:var(--ink);color:#b8d4c4;padding:40px 2rem;margin-top:60px;text-align:center}
+.footer-logo{font-family:'DM Serif Display',serif;font-size:26px;color:#fff;margin-bottom:8px}
+.footer-sub{font-size:14px;margin-bottom:20px;line-height:1.6}
+.footer-team{font-size:13px;color:#7aaa91}
+.footer-disclaimer{margin-top:20px;font-size:11px;color:#5a8070;max-width:600px;margin-left:auto;margin-right:auto;line-height:1.5}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .hero{grid-template-columns:1fr;gap:36px;padding:40px 1.5rem 40px}
+  .hero h1{font-size:34px}
+  .hero-visual{display:none}
+  .cost-form{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .section{padding:16px 1.5rem 50px}
+  .tabs{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="logo-icon">🏥</div>
+      <div class="logo-text">MedPath<span>AI</span></div>
+    </div>
+    <div class="nav-links">
+      <a href="#tools" class="active">Tools</a>
+      <a href="#hospitals">Hospitals</a>
+      <a href="#about">About</a>
+    </div>
+    <div class="team-badge">AI Avengers</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-label">India's Healthcare Cost Intelligence</div>
+    <h1>Know your <em>real</em> healthcare costs before you pay</h1>
+    <p>Symptom analysis, transparent cost estimates, overpricing alerts, and hospital recommendations — all in one place, built for every Indian patient.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">Check Symptoms →</button>
+      <button class="btn-secondary" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'});switchTab('cost')">Estimate Costs</button>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hv-row">
+      <div class="hv-icon g">🩺</div>
+      <div class="hv-text"><div class="hv-title">Dengue Fever</div><div class="hv-sub">Matched: fever, rash, joint pain</div></div>
+      <div class="hv-val">82%</div>
+    </div>
+    <div class="hv-row">
+      <div class="hv-icon t">💰</div>
+      <div class="hv-text"><div class="hv-title">Estimated Cost</div><div class="hv-sub">Tier 1 · Private Hospital</div></div>
+      <div class="hv-val">₹50K</div>
+    </div>
+    <div class="hv-row">
+      <div class="hv-icon r">⚠️</div>
+      <div class="hv-text"><div class="hv-title">Overpricing Alert</div><div class="hv-sub">Quoted ₹90K vs baseline ₹50K</div></div>
+      <div class="hv-val" style="color:var(--red)">+80%</div>
+    </div>
+    <div class="hv-row">
+      <div class="hv-icon a">🏥</div>
+      <div class="hv-text"><div class="hv-title">AIIMS New Delhi</div><div class="hv-sub">Govt · ★★★★★ 4.8</div></div>
+      <div class="hv-val" style="font-size:14px;color:var(--muted)">Low</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- TOOLS SECTION -->
+<div class="section" id="tools">
+  <div class="section-title">Healthcare Tools</div>
+  <div class="section-sub">Four powerful tools to make informed medical decisions</div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('symptom')">🩺 Symptom Analyzer</button>
+    <button class="tab" onclick="switchTab('cost')">💰 Cost Estimator</button>
+    <button class="tab" onclick="switchTab('hospitals')">🏥 Hospitals</button>
+  </div>
+
+  <!-- SYMPTOM ANALYZER -->
+  <div class="tab-panel active" id="panel-symptom">
+    <div class="card">
+      <label class="form-label">Enter your symptoms</label>
+      <div class="form-hint">Type below or click the quick-select tags. Separate multiple symptoms with commas.</div>
+      <input class="symptom-input" id="symptomInput" type="text" placeholder="e.g. fever, headache, joint pain, rash"/>
+      <div class="symptom-tags" id="symptomTags"></div>
+      <button class="analyze-btn" onclick="analyzeSymptoms()">Analyze Symptoms →</button>
+      <div class="result-box" id="symptomResult"></div>
+    </div>
+  </div>
+
+  <!-- COST ESTIMATOR -->
+  <div class="tab-panel" id="panel-cost">
+    <div class="card">
+      <div class="cost-form">
+        <div class="form-group">
+          <label class="form-label">Condition / Disease</label>
+          <select class="form-select" id="costDisease"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">City Tier</label>
+          <select class="form-select" id="costTier">
+            <option value="tier1">Tier 1 — Metro (Delhi, Mumbai, Chennai…)</option>
+            <option value="tier2">Tier 2 — Large City (Coimbatore, Jaipur…)</option>
+            <option value="tier3">Tier 3 — Small City / Town</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Hospital Type</label>
+          <select class="form-select" id="costHospType">
+            <option value="private">Private Hospital</option>
+            <option value="government">Government Hospital</option>
+          </select>
+        </div>
+        <div class="form-group" style="justify-content:flex-end">
+          <label class="form-label">&nbsp;</label>
+          <button class="cost-btn" onclick="estimateCost()">Get Cost Estimate →</button>
+        </div>
+      </div>
+      <div class="cost-result" id="costResult"></div>
+    </div>
+  </div>
+
+  <!-- HOSPITALS (duplicate for tab) -->
+  <div class="tab-panel" id="panel-hospitals">
+    <div id="hospitalTabContent"></div>
+  </div>
+
+</div>
+
+<hr class="divider"/>
+
+<!-- HOSPITALS SECTION -->
+<div class="section" id="hospitals">
+  <div class="section-title">Hospital Directory</div>
+  <div class="section-sub">14 verified hospitals across India — filter by your needs</div>
+  <div class="filter-row">
+    <select class="filter-select" id="filterTier" onchange="renderHospitals('main')">
+      <option value="all">All Tiers</option>
+      <option value="tier1">Tier 1 (Metro)</option>
+      <option value="tier2">Tier 2 (Large City)</option>
+      <option value="tier3">Tier 3 (Town)</option>
+    </select>
+    <select class="filter-select" id="filterType" onchange="renderHospitals('main')">
+      <option value="all">All Types</option>
+      <option value="private">Private</option>
+      <option value="government">Government</option>
+    </select>
+    <select class="filter-select" id="filterRating" onchange="renderHospitals('main')">
+      <option value="0">Any Rating</option>
+      <option value="4">Good (≥ 4.0)</option>
+      <option value="4.5">Excellent (≥ 4.5)</option>
+    </select>
+  </div>
+  <div class="hospital-grid" id="hospitalGrid"></div>
+</div>
+
+<!-- ABOUT -->
+<div class="section" id="about">
+  <hr class="divider" style="margin:0 0 48px"/>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center">
+    <div>
+      <div class="section-title">About MedPath AI</div>
+      <p style="font-size:15px;color:var(--muted);line-height:1.8;font-weight:300;margin-bottom:16px">Healthcare cost opacity affects over 1.4 billion Indians. MedPath AI brings transparent, data-driven cost intelligence to every patient — before they step into a hospital.</p>
+      <p style="font-size:15px;color:var(--muted);line-height:1.8;font-weight:300">Built with zero external dependencies — pure HTML, CSS and JavaScript. Runs entirely in your browser.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:20px;text-align:center">
+        <div style="font-family:'DM Serif Display',serif;font-size:36px;color:var(--green)">10</div>
+        <div style="font-size:13px;color:var(--muted);font-weight:500">Diseases covered</div>
+      </div>
+      <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:20px;text-align:center">
+        <div style="font-family:'DM Serif Display',serif;font-size:36px;color:var(--green)">60</div>
+        <div style="font-size:13px;color:var(--muted);font-weight:500">Cost data points</div>
+      </div>
+      <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:20px;text-align:center">
+        <div style="font-family:'DM Serif Display',serif;font-size:36px;color:var(--green)">14</div>
+        <div style="font-size:13px;color:var(--muted);font-weight:500">Hospitals listed</div>
+      </div>
+      <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:20px;text-align:center">
+        <div style="font-family:'DM Serif Display',serif;font-size:36px;color:var(--green)">3</div>
+        <div style="font-size:13px;color:var(--muted);font-weight:500">City tiers</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">MedPath AI</div>
+  <div class="footer-sub">India's Healthcare Navigator & Cost Estimator</div>
+  <div class="footer-team">Team AI Avengers — Isai Abinaya S &nbsp;·&nbsp; Jafrin A &nbsp;·&nbsp; Anushya V</div>
+  <div class="footer-disclaimer">⚠ This tool is for informational purposes only and does not constitute medical advice. Always consult a qualified healthcare professional for diagnosis and treatment decisions.</div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════ */
+const DISEASES = {
+  "dengue":{label:"Dengue Fever",symptoms:["fever","rash","headache","joint pain","muscle pain","eye pain","nausea","vomiting","fatigue","chills"],specialist:"General Physician / Infectious Disease Specialist",costs:{tier1:{private:[15000,50000],government:[2000,8000]},tier2:{private:[10000,35000],government:[1500,5000]},tier3:{private:[7000,20000],government:[500,3000]}}},
+  "diabetes":{label:"Diabetes Mellitus",symptoms:["frequent urination","excessive thirst","blurred vision","fatigue","slow healing","tingling","numbness","weight loss","hunger","dry mouth"],specialist:"Endocrinologist / Diabetologist",costs:{tier1:{private:[5000,20000],government:[500,3000]},tier2:{private:[3000,12000],government:[300,2000]},tier3:{private:[2000,8000],government:[200,1500]}}},
+  "heart disease":{label:"Cardiac Disease",symptoms:["chest pain","shortness of breath","palpitations","dizziness","sweating","nausea","arm pain","jaw pain","fatigue","ankle swelling"],specialist:"Cardiologist",costs:{tier1:{private:[50000,300000],government:[5000,30000]},tier2:{private:[35000,200000],government:[3000,20000]},tier3:{private:[20000,100000],government:[2000,12000]}}},
+  "typhoid":{label:"Typhoid Fever",symptoms:["prolonged fever","stomach pain","headache","diarrhea","constipation","weakness","loss of appetite","rash","chills","vomiting"],specialist:"General Physician / Gastroenterologist",costs:{tier1:{private:[10000,30000],government:[1000,5000]},tier2:{private:[6000,20000],government:[800,3500]},tier3:{private:[4000,12000],government:[500,2000]}}},
+  "asthma":{label:"Asthma",symptoms:["wheezing","coughing","shortness of breath","chest tightness","difficulty breathing","night cough","breathlessness","mucus","phlegm","allergies"],specialist:"Pulmonologist / Respiratory Specialist",costs:{tier1:{private:[5000,25000],government:[500,3000]},tier2:{private:[3000,15000],government:[300,2000]},tier3:{private:[2000,10000],government:[200,1500]}}},
+  "malaria":{label:"Malaria",symptoms:["fever","chills","sweating","headache","nausea","vomiting","fatigue","body ache","shivering","muscle pain"],specialist:"Infectious Disease Specialist",costs:{tier1:{private:[8000,25000],government:[500,3000]},tier2:{private:[5000,15000],government:[300,2000]},tier3:{private:[3000,10000],government:[200,1500]}}},
+  "migraine":{label:"Migraine",symptoms:["severe headache","headache","light sensitivity","nausea","vomiting","vision changes","aura","sound sensitivity","throbbing pain","dizziness"],specialist:"Neurologist",costs:{tier1:{private:[3000,15000],government:[300,2000]},tier2:{private:[2000,10000],government:[200,1500]},tier3:{private:[1000,6000],government:[100,1000]}}},
+  "appendicitis":{label:"Appendicitis",symptoms:["right side abdominal pain","abdominal pain","nausea","vomiting","fever","loss of appetite","bloating","diarrhea","constipation","stomach cramps"],specialist:"General Surgeon",costs:{tier1:{private:[60000,150000],government:[5000,20000]},tier2:{private:[40000,100000],government:[3000,15000]},tier3:{private:[20000,60000],government:[2000,10000]}}},
+  "tuberculosis":{label:"Tuberculosis (TB)",symptoms:["persistent cough","coughing blood","weight loss","night sweats","fever","fatigue","chest pain","loss of appetite","breathlessness","weakness"],specialist:"Pulmonologist / TB Specialist",costs:{tier1:{private:[20000,80000],government:[0,2000]},tier2:{private:[12000,50000],government:[0,1500]},tier3:{private:[8000,30000],government:[0,1000]}}},
+  "kidney stone":{label:"Kidney Stone",symptoms:["severe back pain","flank pain","blood in urine","painful urination","nausea","vomiting","frequent urination","cloudy urine","fever","chills"],specialist:"Urologist / Nephrologist",costs:{tier1:{private:[30000,150000],government:[3000,15000]},tier2:{private:[20000,100000],government:[2000,10000]},tier3:{private:[10000,60000],government:[1000,7000]}}}
+};
+
+const HOSPITALS = [
+  {name:"AIIMS New Delhi",city:"New Delhi",tier:"tier1",type:"government",rating:4.8,speciality:"Multi-specialty",budget:"Low",contact:"011-26588500",address:"Sri Aurobindo Marg, Ansari Nagar, New Delhi"},
+  {name:"Apollo Hospitals Chennai",city:"Chennai",tier:"tier1",type:"private",rating:4.7,speciality:"Multi-specialty",budget:"High",contact:"044-28290200",address:"21 Greams Lane, Off Greams Road, Chennai"},
+  {name:"Fortis Hospital Mumbai",city:"Mumbai",tier:"tier1",type:"private",rating:4.5,speciality:"Cardiac & Neuro",budget:"High",contact:"022-62085000",address:"Mulund Goregaon Link Road, Mumbai"},
+  {name:"KEM Hospital Mumbai",city:"Mumbai",tier:"tier1",type:"government",rating:4.2,speciality:"Multi-specialty",budget:"Low",contact:"022-24107000",address:"Acharya Donde Marg, Parel, Mumbai"},
+  {name:"Manipal Hospital Bengaluru",city:"Bengaluru",tier:"tier1",type:"private",rating:4.6,speciality:"Multi-specialty",budget:"High",contact:"080-25024444",address:"98, HAL Airport Road, Bengaluru"},
+  {name:"Victoria Hospital Bengaluru",city:"Bengaluru",tier:"tier1",type:"government",rating:4.0,speciality:"Multi-specialty",budget:"Low",contact:"080-26706000",address:"K R Road, Bengaluru"},
+  {name:"PSG Hospitals Coimbatore",city:"Coimbatore",tier:"tier2",type:"private",rating:4.5,speciality:"Multi-specialty",budget:"Medium",contact:"0422-4345000",address:"Peelamedu, Coimbatore"},
+  {name:"ESIC Hospital Coimbatore",city:"Coimbatore",tier:"tier2",type:"government",rating:3.9,speciality:"General Medicine",budget:"Low",contact:"0422-2402000",address:"Pappanaickenpalayam, Coimbatore"},
+  {name:"KIMS Hospital Hyderabad",city:"Hyderabad",tier:"tier2",type:"private",rating:4.4,speciality:"Multi-specialty",budget:"Medium",contact:"040-44885000",address:"1-8-31/1, Minister Road, Secunderabad"},
+  {name:"Osmania General Hospital",city:"Hyderabad",tier:"tier2",type:"government",rating:4.0,speciality:"Multi-specialty",budget:"Low",contact:"040-24600139",address:"Afzal Gunj, Hyderabad"},
+  {name:"District Hospital Madurai",city:"Madurai",tier:"tier3",type:"government",rating:3.8,speciality:"General Medicine",budget:"Low",contact:"0452-2532535",address:"Panagal Road, Madurai"},
+  {name:"Meenakshi Mission Hospital",city:"Madurai",tier:"tier3",type:"private",rating:4.3,speciality:"Multi-specialty",budget:"Medium",contact:"0452-2588001",address:"Lake Area, Melur Road, Madurai"},
+  {name:"District Hospital Tirunelveli",city:"Tirunelveli",tier:"tier3",type:"government",rating:3.7,speciality:"General Medicine",budget:"Low",contact:"0462-2336200",address:"Palayamkottai, Tirunelveli"},
+  {name:"Sri Ramakrishna Hospital",city:"Tirunelveli",tier:"tier3",type:"private",rating:4.1,speciality:"General & Surgical",budget:"Low",contact:"0462-2501444",address:"Melapalayam, Tirunelveli"}
+];
+
+/* QUICK SYMPTOM TAGS */
+const QUICK_TAGS = ["fever","headache","cough","fatigue","nausea","vomiting","chest pain","joint pain","rash","dizziness","weight loss","shortness of breath"];
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+function init(){
+  // Symptom tags
+  const tagEl = document.getElementById('symptomTags');
+  QUICK_TAGS.forEach(t=>{
+    const el = document.createElement('span');
+    el.className='stag'; el.textContent=t;
+    el.onclick=()=>toggleTag(el,t);
+    tagEl.appendChild(el);
+  });
+
+  // Populate disease dropdown
+  const sel = document.getElementById('costDisease');
+  Object.entries(DISEASES).forEach(([k,v])=>{
+    const o = document.createElement('option');
+    o.value=k; o.textContent=v.label;
+    sel.appendChild(o);
+  });
+
+  // Hospitals
+  renderHospitals('main');
+
+  // Tab panel hospitals (mirror)
+  document.getElementById('hospitalTabContent').innerHTML = `
+    <div class="filter-row">
+      <select class="filter-select" id="filterTier2" onchange="renderHospitals('tab')">
+        <option value="all">All Tiers</option>
+        <option value="tier1">Tier 1</option>
+        <option value="tier2">Tier 2</option>
+        <option value="tier3">Tier 3</option>
+      </select>
+      <select class="filter-select" id="filterType2" onchange="renderHospitals('tab')">
+        <option value="all">All Types</option>
+        <option value="private">Private</option>
+        <option value="government">Government</option>
+      </select>
+    </div>
+    <div class="hospital-grid" id="hospitalGrid2"></div>
+  `;
+  renderHospitals('tab');
+}
+
+/* ═══════════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════════ */
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    const panels=['symptom','cost','hospitals'];
+    t.classList.toggle('active', panels[i]===name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+}
+
+/* ═══════════════════════════════════════════════
+   SYMPTOM ANALYZER
+═══════════════════════════════════════════════ */
+const selectedTags = new Set();
+
+function toggleTag(el, tag){
+  if(selectedTags.has(tag)){selectedTags.delete(tag);el.classList.remove('active');}
+  else{selectedTags.add(tag);el.classList.add('active');}
+  updateSymptomInput();
+}
+
+function updateSymptomInput(){
+  const typed = document.getElementById('symptomInput').value
+    .split(',').map(s=>s.trim()).filter(s=>s && !selectedTags.has(s));
+  const all = [...selectedTags, ...typed];
+  document.getElementById('symptomInput').value = all.join(', ');
+}
+
+function analyzeSymptoms(){
+  const raw = document.getElementById('symptomInput').value;
+  const symptoms = raw.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
+  if(!symptoms.length){alert('Please enter at least one symptom.');return;}
+
+  const scores = [];
+  for(const [key,info] of Object.entries(DISEASES)){
+    let matches=0;
+    for(const us of symptoms){
+      for(const ds of info.symptoms){
+        if(us.includes(ds)||ds.includes(us)){matches++;break;}
+      }
+    }
+    if(matches>0) scores.push({key,info,matches});
+  }
+  scores.sort((a,b)=>b.matches-a.matches);
+
+  const box = document.getElementById('symptomResult');
+  if(!scores.length){
+    box.className='result-box show';
+    box.innerHTML=`<div class="alert-box normal"><div class="alert-icon">ℹ️</div><div><div class="alert-title">No match found</div><div class="alert-msg">No condition matched your symptoms. Please consult a General Physician.</div></div></div>`;
+    return;
+  }
+
+  let html='';
+  scores.slice(0,3).forEach((s,i)=>{
+    const pct = Math.min(99, Math.round((s.matches/s.info.symptoms.length)*100 + s.matches*5));
+    const fillClass = pct>60?'':'medium';
+    const rankLabels=['Top Match','2nd Match','3rd Match'];
+    html+=`
+      <div class="result-item">
+        <div class="result-rank">${rankLabels[i]||''}</div>
+        <div class="result-disease">${s.info.label}</div>
+        <div class="result-meta">${s.matches} symptom${s.matches>1?'s':''} matched out of ${s.info.symptoms.length}</div>
+        <div class="confidence-bar"><div class="confidence-fill ${fillClass}" style="width:${pct}%"></div></div>
+        <div class="confidence-label"><span>Confidence</span><span>${pct}%</span></div>
+        <div class="specialist-chip">🩺 ${s.info.specialist}</div>
+      </div>`;
+  });
+  box.className='result-box show';
+  box.innerHTML=html;
+
+  // Also prefill cost estimator with top match
+  document.getElementById('costDisease').value = scores[0].key;
+}
+
+/* ═══════════════════════════════════════════════
+   COST ESTIMATOR
+═══════════════════════════════════════════════ */
+function inr(n){
+  if(n===0)return'₹0';
+  const s=n.toString().split('').reverse();
+  let r='';
+  s.forEach((d,i)=>{if(i>0&&i<3&&i%3===0)r=','+r;else if(i>=3&&(i-3)%2===0)r=','+r;r=d+r;});
+  return'₹'+r;
+}
+
+function estimateCost(){
+  const disease = document.getElementById('costDisease').value;
+  const tier = document.getElementById('costTier').value;
+  const hospType = document.getElementById('costHospType').value;
+  const info = DISEASES[disease];
+  const [mn,mx] = info.costs[tier][hospType];
+  const tierLabel = {tier1:'Tier 1 — Metro',tier2:'Tier 2 — Large City',tier3:'Tier 3 — Town'}[tier];
+
+  const html=`
+    <div class="cost-header">
+      <div class="cost-title">${info.label}</div>
+      <div class="cost-pills">
+        <span class="pill tier">${tierLabel}</span>
+        <span class="pill type">${hospType.charAt(0).toUpperCase()+hospType.slice(1)}</span>
+      </div>
+    </div>
+    <div class="cost-range-box">
+      <div class="cost-range-label">Estimated Treatment Cost Range</div>
+      <div class="cost-range-val">${inr(mn)} &ndash; ${inr(mx)}</div>
+      <div class="cost-range-sub">Based on CGHS / NHA benchmark data for ${tierLabel}</div>
+    </div>
+    <div class="quoted-section">
+      <div class="form-label" style="margin-bottom:10px">⚠️ Overpricing Alert — Check a Quoted Amount</div>
+      <div class="quoted-row">
+        <input class="quoted-input" id="quotedAmt" type="number" placeholder="Enter quoted amount in ₹" min="0"/>
+        <button class="check-btn" onclick="checkOverprice(${mx})">Check →</button>
+      </div>
+      <div id="overprice-result" style="margin-top:16px"></div>
+    </div>`;
+  const res = document.getElementById('costResult');
+  res.className='cost-result show';
+  res.innerHTML=html;
+}
+
+function checkOverprice(baselineMax){
+  const raw = document.getElementById('quotedAmt').value;
+  if(!raw){alert('Please enter a quoted amount.');return;}
+  const quoted = parseInt(raw);
+  if(isNaN(quoted)||quoted<0){alert('Please enter a valid amount.');return;}
+  const ratio = baselineMax>0 ? quoted/baselineMax : 1;
+  let cls,icon,title,msg,tip;
+  if(ratio<=1.0){
+    cls='fair';icon='✅';title='Fair Price';
+    msg=`The quoted amount (${inr(quoted)}) is within or below the expected baseline of ${inr(baselineMax)}. You are likely getting a fair deal.`;
+    tip='You may proceed with confidence. Still ask for an itemised bill.';
+  } else if(ratio<=1.3){
+    cls='normal';icon='⚠️';title='Slightly Elevated';
+    msg=`The quoted amount (${inr(quoted)}) is ${Math.round((ratio-1)*100)}% above the baseline (${inr(baselineMax)}). This may reflect premium facilities or extra services.`;
+    tip='Ask for an itemised bill and verify each line item before paying.';
+  } else {
+    cls='high';icon='🚨';title='Possible Overpricing!';
+    msg=`The quoted amount (${inr(quoted)}) is ${Math.round((ratio-1)*100)}% above the expected baseline (${inr(baselineMax)}). This significantly exceeds fair market rates.`;
+    tip='Request an itemised bill immediately. Get 2–3 quotes from other hospitals. Contact your District Health Officer or report via the NHA portal if denied.';
+  }
+  document.getElementById('overprice-result').innerHTML=`
+    <div class="alert-box ${cls}">
+      <div class="alert-icon">${icon}</div>
+      <div>
+        <div class="alert-title">${title} — Deviation: ${ratio>=1?('+'+Math.round((ratio-1)*100)):'−'+Math.round((1-ratio)*100)}%</div>
+        <div class="alert-msg">${msg}<br/><br/><strong>Tip:</strong> ${tip}</div>
+      </div>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════════
+   HOSPITALS
+═══════════════════════════════════════════════ */
+function renderHospitals(target){
+  const suffix = target==='tab' ? '2' : '';
+  const tierF = (document.getElementById('filterTier'+suffix)||{}).value||'all';
+  const typeF = (document.getElementById('filterType'+suffix)||{}).value||'all';
+  const ratF  = parseFloat((document.getElementById('filterRating'+(target==='main'?'':suffix))||{}).value||0);
+  const gridId = target==='tab' ? 'hospitalGrid2' : 'hospitalGrid';
+
+  const filtered = HOSPITALS.filter(h=>{
+    if(tierF!=='all'&&h.tier!==tierF)return false;
+    if(typeF!=='all'&&h.type!==typeF)return false;
+    if(h.rating<ratF)return false;
+    return true;
+  }).sort((a,b)=>b.rating-a.rating);
+
+  const grid = document.getElementById(gridId);
+  if(!grid)return;
+  if(!filtered.length){grid.innerHTML='<div class="no-results">No hospitals match your filters. Try adjusting them.</div>';return;}
+
+  grid.innerHTML = filtered.map(h=>{
+    const stars='★'.repeat(Math.round(h.rating))+'☆'.repeat(5-Math.round(h.rating));
+    const bClass = h.budget==='Low'?'low':h.budget==='High'?'high':'medium';
+    const tierLabel = {tier1:'Tier 1',tier2:'Tier 2',tier3:'Tier 3'}[h.tier];
+    return `
+      <div class="hospital-card">
+        <div class="hc-top">
+          <div>
+            <div class="hc-name">${h.name}</div>
+            <div class="hc-city">${h.city} &nbsp;·&nbsp; ${tierLabel}</div>
+          </div>
+          <span class="hc-badge ${h.type}">${h.type.charAt(0).toUpperCase()+h.type.slice(1)}</span>
+        </div>
+        <hr class="hc-divider"/>
+        <div class="hc-row">
+          <span class="hc-row-label">Rating</span>
+          <span><span class="stars">${stars}</span> <strong>${h.rating}</strong></span>
+        </div>
+        <div class="hc-row">
+          <span class="hc-row-label">Speciality</span>
+          <span class="hc-row-val">${h.speciality}</span>
+        </div>
+        <div class="hc-row">
+          <span class="hc-row-label">Budget</span>
+          <span class="budget-chip ${bClass}">${h.budget}</span>
+        </div>
+        <div class="hc-contact">📞 ${h.contact}</div>
+        <div class="hc-address">📍 ${h.address}</div>
+      </div>`;
+  }).join('');
+}
+
+init();
+</script>
+</body>
+</html>
+
