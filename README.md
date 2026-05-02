@@ -38,25 +38,15 @@ MedPath AI helps Indian patients:
 ### 1. Clone / Download the project
 
 ```bash
-cd medpath-ai
+cd medpath-ai1
 ```
 
-### 2. Install dependencies
+
+
+### 2. Run the app
 
 ```bash
-pip install -r requirements.txt
-```
-
-### 3. Run the app
-
-```bash
-python app.py
-```
-
-### 4. Open in browser
-
-```
-http://localhost:5000
+start index.html
 ```
 
 ---
@@ -64,7 +54,7 @@ http://localhost:5000
 ## 🗂️ Project Structure
 
 ```
-medpath-ai/
+medpath-ai1/
 │
 ├── app.py                    # Flask backend — all routes and API logic
 ├── requirements.txt          # Python dependencies (only Flask!)
